@@ -37,11 +37,11 @@ std::vector<double> LineGeometry::BoundaryInverse(double y_value){
 };
 
 
-int LineGeometry::Inside(std::array<double, 2> point){
-  if (point[0] < point[1]){
+int LineGeometry::Inside(helpers::Point point){
+  if (point.x_val < point.y_val){
     return 0;
   }
-  else if (point[0] > point[1]){
+  else if (point.x_val > point.y_val){
     return 1;
   }
   else {

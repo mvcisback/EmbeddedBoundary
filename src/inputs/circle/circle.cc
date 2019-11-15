@@ -44,11 +44,11 @@ std::vector<double> CircleGeometry::BoundaryInverse(double y_value){
 };
 
 
-int CircleGeometry::Inside(std::array<double, 2> point){
-  if ((std::pow(point[0], 2) + std::pow(point[1], 2)) > 1){
+int CircleGeometry::Inside(helpers::Point point){
+  if ((std::pow(point.x_val, 2) + std::pow(point.y_val, 2)) > 1){
     return 0;
   }
-  else if ((std::pow(point[0], 2) + std::pow(point[1], 2)) < 1){
+  else if ((std::pow(point.x_val, 2) + std::pow(point.y_val, 2)) < 1){
     return 1;
   }
   else {

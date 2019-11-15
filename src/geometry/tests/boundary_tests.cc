@@ -1,6 +1,7 @@
 #include "geometry/boundary.h"
 #include "inputs/line/line.h"
 #include "inputs/circle/circle.h"
+#include "inputs/offset_circle/offset_circle.h"
 
 #include "gtest/gtest.h"
 #include <array>
@@ -12,26 +13,26 @@ namespace geometry {
 
 TEST(BoundaryTests, IsBoundaryCell){
   boundary::inputs::LineGeometry input;
-  std::array<double, 2> lower_left = {-1, -1};
-  std::array<double, 2> lower_right = {-.75, -1};
-  std::array<double, 2> upper_right = {-.75, -.75};
-  std::array<double, 2> upper_left = {-1, -.75};
+  helpers::Point lower_left = helpers::Point(-1, -1);
+  helpers::Point lower_right = helpers::Point(-.75, -1);
+  helpers::Point upper_right = helpers::Point(-.75, -.75);
+  helpers::Point upper_left = helpers::Point(-1, -.75);
   bool is_boundary = Boundary::IsBoundaryCell(lower_left, lower_right,
                                     upper_right, upper_left, &input);
   EXPECT_TRUE(is_boundary);
 
-  std::array<double, 2> lower_left2 = {-1, .75};
-  std::array<double, 2> lower_right2 = {-.75, .75};
-  std::array<double, 2> upper_right2 = {-.75, 1};
-  std::array<double, 2> upper_left2 = {-1, 1};
+  helpers::Point lower_left2 = helpers::Point(-1, .75);
+  helpers::Point lower_right2 = helpers::Point(-.75, .75);
+  helpers::Point upper_right2 = helpers::Point(-.75, 1);
+  helpers::Point upper_left2 = helpers::Point(-1, 1);
   bool is_boundary2 = Boundary::IsBoundaryCell(lower_left2, lower_right2,
                                     upper_right2, upper_left2, &input);
   EXPECT_FALSE(is_boundary2);
 
-  std::array<double, 2> lower_left3 = {-.75, -1};
-  std::array<double, 2> lower_right3 = {-.5, -1};
-  std::array<double, 2> upper_right3 = {-.5, -.75};
-  std::array<double, 2> upper_left3 = {-.75, -.75};
+  helpers::Point lower_left3 = helpers::Point(-.75, -1);
+  helpers::Point lower_right3 = helpers::Point(-.5, -1);
+  helpers::Point upper_right3 = helpers::Point(-.5, -.75);
+  helpers::Point upper_left3 = helpers::Point(-.75, -.75);
   bool is_boundary3 = Boundary::IsBoundaryCell(lower_left3, lower_right3,
                                     upper_right3, upper_left3, &input);
   EXPECT_FALSE(is_boundary3);
@@ -134,11 +135,17 @@ TEST(BoundaryTests, VolumeMoments){
        it != circle_boundary_cells.end(); it++){
           total_circle += it->second.volume_moments[0][0];
        }
-  std::cout << total_circle << std::endl;
   EXPECT_NEAR(total_circle, 3.14, 5e-2);
 
 }
 
+
+TEST(BoundaryTests, AdaptiveTree){
+  boundary::inputs::OffsetCircle offset_circle;
+  Boundary circle_boundary = Boundary(&offset_circle);
+  circle_boundary.MakeCellTree();
+  std::map<helpers::Point, cell_info> cell_tree = circle_boundary.CellTree();
+}
 } // namespace geometry
 
 } // namespace boundary

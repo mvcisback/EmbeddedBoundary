@@ -17,6 +17,8 @@ namespace helpers {
       Point(double first_dim, double second_dim);
       ~Point() = default;
       Point operator + (const Point &a_point);
+      /// Lexicographic Ordering
+      bool operator < (const Point &a_point) const;
       double x_val;
       double y_val;
       //int MortonOrder(); will implement later using Phil's code

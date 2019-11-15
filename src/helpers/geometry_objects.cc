@@ -27,6 +27,17 @@ Point Point::operator + (const Point &a_point){
   return result;
 };
 
+
+bool Point::operator < (const Point &a_point) const {
+  if (x_val == a_point.x_val){
+    return y_val < a_point.y_val;
+  }
+  else {
+    return x_val < a_point.x_val;
+  }
+};
+
+
 } // namespace helpers
 
 } // namespace boundary

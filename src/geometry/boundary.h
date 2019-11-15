@@ -24,6 +24,15 @@ namespace geometry {
     std::vector<std::vector<double>> volume_moments;
     /// boundary moments
     std::vector<std::vector<double>> boundary_moments;
+    // children
+    std::map<std::array<double, 2>, geo_info> children;
+  };
+
+  struct cell_info{
+    /// tells if cell is inside (0), outside (1), or boundary (2)
+    int cell_type;
+    // children
+    std::map<std::array<double, 2>, geo_info> children;
   };
 
 /// A class describing the boundary geometry.
@@ -37,17 +46,26 @@ This class stores a map of all boundary cells with necessary geometry informatio
       Iterates through all cells in geometry and adds boundary cells to map
       */
       Boundary(boundary::inputs::InputBase* input);
-      /// Determines if a cell is a boundary cell
-      static bool IsBoundaryCell(std::array<double, 2> lower_left,
-                                 std::array<double, 2> lower_right,
-                                 std::array<double, 2> upper_right,
-                                 std::array<double, 2> upper_left,
+      /// Determines if a cell is a boundary cell. Deprecated -- go through and replace with inside outside
+      static bool IsBoundaryCell(helpers::Point lower_left,
+                                 helpers::Point lower_right,
+                                 helpers::Point upper_right,
+                                 helpers::Point upper_left,
                                  boundary::inputs::InputBase* input);
+      /// Determines if cell corners are all inside (0), all outside (1), or mixed (2)
+      static int InsideOutside(helpers::Point lower_left,
+                               helpers::Point lower_right,
+                               helpers::Point upper_right,
+                               helpers::Point upper_left,
+                               boundary::inputs::InputBase* input);
       std::map<std::array<double, 2>, geo_info> BoundaryCells();
       static double WhichValue(std::vector<double> values,
                          double first_bound,
                          double second_bound);
-
+      void MakeCellTree();
+      void RecursiveRefine(double x_min, double x_max, double y_min,
+                           double y_max);
+      std::map<helpers::Point, cell_info> CellTree();                    
     private:
 
       void CalculateMoments_(std::array<double, 2> cell_center);
@@ -66,6 +84,7 @@ This class stores a map of all boundary cells with necessary geometry informatio
       boundary::inputs::InputBase* input_;
       int Q_;
       double cell_size_;
+      std::map<helpers::Point, cell_info> cell_tree_;
   };
 }
 
